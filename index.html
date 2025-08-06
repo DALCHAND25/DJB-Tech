@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DJB Tech - Dalchand Ahirwar</title>
+
+  <!-- Font Awesome CDN (for icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff8e1;
+      color: #222;
+    }
+
+    header {
+      background: #ffd700;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav {
+      background: #d32f2f;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .hero {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .hero img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    section {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .gallery {
+      display: flex;
+      overflow-x: auto;
+      gap: 12px;
+      padding-bottom: 10px;
+    }
+
+    .gallery img {
+      height: 180px;
+      border-radius: 8px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #d32f2f;
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 28px;
+      text-align: center;
+      line-height: 50px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    footer {
+      background: #f5f5f5;
+      text-align: center;
+      padding: 16px;
+      color: #555;
+      margin-top: 30px;
+    }
+
+    /* 🔶 सेवाएँ के बॉक्स + आइकन */
+    .service-boxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .service-card {
+      background: #fff3cd;
+      border: 2px solid #ff9800;
+      padding: 20px;
+      border-radius: 10px;
+      width: 240px;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .service-card:hover {
+      transform: scale(1.05);
+    }
+
+    .service-card i {
+      font-size: 36px;
+      color: #ff9800;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header style="display: flex; align-items: center; background: linear-gradient(90deg, #FFD700, #FF6347); padding: 16px 24px; border-bottom: 2px solid #e5e7eb;">
+    <img src="logo.png" style="height: 80px; width: auto; border-radius: 10px; margin-right: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <div style="display: flex; flex-direction: column;">
+      <h1 style="margin: 0; font-size: 28px; font-weight: bold; color: #1f2937;">DJB Tech</h1>
+      <p style="margin: 4px 0 0; font-size: 16px; color: #374151;">Founder: Dalchand Ahirwar</p>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#about">परिचय</a>
+    <a href="#gallery">गैलरी</a>
+    <a href="#services">सेवाएँ</a>
+    <a href="#team">टीम</a>
+    <a href="#contact">संपर्क</a>
+  </nav>
+
+  <div class="hero">
+    <img src="profile.jpg" alt="Dalchand Ahirwar" />
+    <h2>Dalchand Ahirwar</h2>
+    <p>Engineer (Electronics & Communication) | Founder - DJB Tech</p>
+  </div>
+
+  <section id="about">
+    <div class="section-title">परिचय</div>
+    <p>
+      नमस्कार! मैं DALCHAND AHIRWAR, एक उत्साही इलेक्ट्रॉनिक्स और कम्युनिकेशन इंजीनियर हूँ। 
+      मैंने DJB Tech की स्थापना की है जहाँ हम टेक्नोलॉजी समाधान, वेब डिजाइन, सॉफ्टवेयर डेवलपमेंट जैसी सेवाएं प्रदान करते हैं।
+    </p>
+  </section>
+
+  <section id="gallery">
+    <div class="section-title">गैलरी</div>
+    <div class="gallery">
+      <img src="gallery1.jpg" alt="Gallery Image 1">
+      <img src="gallery2.jpg" alt="Gallery Image 2">
+      <img src="gallery3.jpg" alt="Gallery Image 3">
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="section-title">हमारी सेवाएँ</div>
+    <div class="service-boxes">
+      <div class="service-card">
+        <i class="fas fa-globe"></i><br>
+        वेबसाइट डेवलपमेंट
+      </div>
+      <div class="service-card">
+        <i class="fas fa-cogs"></i><br>
+        सॉफ्टवेयर डिज़ाइन और कस्टमाइज़ेशन
+      </div>
+      <div class="service-card">
+        <i class="fas fa-bullhorn"></i><br>
+        डिजिटल मार्केटिंग
+      </div>
+      <div class="service-card">
+        <i class="fas fa-microchip"></i><br>
+        इलेक्ट्रॉनिक्स प्रोजेक्ट कंसल्टिंग
+      </div>
+    </div>
+  </section>
+
+  <section id="team">
+    <div class="section-title">हमारी टीम</div>
+    <p>हमारी टीम में अनुभवी डेवलपर्स, डिज़ाइनर और इंजीनियर्स हैं जो हर तकनीकी चुनौती का समाधान करते हैं।</p>
+  </section>
+
+  <section id="contact">
+    <div class="section-title">संपर्क करें</div>
+    <form action="mailto:dalchandahirwar03@gmail.com" method="post" enctype="text/plain">
+      <label>नाम:</label><br>
+      <input type="text" name="नाम" required><br><br>
+
+      <label>ईमेल:</label><br>
+      <input type="email" name="ईमेल" required><br><br>
+
+      <label>संदेश:</label><br>
+      <textarea name="संदेश" rows="4" required></textarea><br><br>
+
+      <button type="submit">भेजें</button>
+    </form>
+    <p><b>मोबाइल:</b> 7879342457</p>
+    <p><b>ईमेल:</b> dalchandahirwar03@gmail.com</p>
+  </section>
+
+  <a class="whatsapp" href="https://wa.me/917879342457" target="_blank">💬</a>
+
+  <footer>
+    © 2025 DJB Tech · Designed by Dalchand Ahirwar
+  </footer>
+
+</body>
+</html>
