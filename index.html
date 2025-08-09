@@ -224,6 +224,7 @@
       right: 10px;
     }
 
+    /* Updated Gallery & Clients Image Size to 9:16 */
     .gallery, .clients {
       display: flex;
       overflow-x: auto;
@@ -232,8 +233,12 @@
     }
 
     .gallery img, .clients img {
-      height: 180px;
+      aspect-ratio: 9 / 16;
+      width: 150px;
+      height: auto;
+      object-fit: cover;
       border-radius: 8px;
+      flex-shrink: 0;
     }
 
     .contact a {
@@ -283,6 +288,7 @@
 </head>
 <body>
 
+  <!-- Header -->
   <header>
     <div class="logo-section">
       <img src="logo.png" alt="Logo">
@@ -295,6 +301,7 @@
     <button class="menu-btn" onclick="toggleMenu()"><i class="fas fa-ellipsis-v"></i></button>
   </header>
 
+  <!-- Navigation -->
   <nav class="menu" id="mainMenu">
     <a href="#about">परिचय</a>
     <a href="#gallery">गैलरी</a>
@@ -304,10 +311,12 @@
     <a href="#contact">संपर्क</a>
   </nav>
 
+  <!-- Hero Section -->
   <div class="hero">
     <p class="lang" data-en="Welcome to DJB Tech" data-hi="डीजेबी टेक में आपका स्वागत है">Welcome to DJB Tech</p>
   </div>
 
+  <!-- About -->
   <section id="about">
     <div class="section-title lang" data-en="About" data-hi="परिचय">परिचय</div>
     <p class="lang" data-en="I am Dalchand Ahirwar, an electronics engineer and founder of DJB Tech, providing tech solutions." data-hi="मैं Dalchand Ahirwar, एक इलेक्ट्रॉनिक्स इंजीनियर और DJB Tech का संस्थापक हूँ, जो तकनीकी समाधान प्रदान करता है।">
@@ -315,6 +324,7 @@
     </p>
   </section>
 
+  <!-- Gallery -->
   <section id="gallery">
     <div class="section-title lang" data-en="Gallery" data-hi="गैलरी">गैलरी</div>
     <div class="gallery">
@@ -323,11 +333,10 @@
       <img src="photo3.jpg" alt="photo3">
       <img src="photo4.jpg" alt="photo4">
       <img src="photo5.jpg" alt="photo5">
-      
-      
     </div>
   </section>
 
+  <!-- Services -->
   <section id="services">
     <div class="section-title lang" data-en="Our Services" data-hi="हमारी सेवाएँ">हमारी सेवाएँ</div>
 
@@ -369,6 +378,7 @@
     </div>
   </section>
 
+  <!-- Team -->
   <section id="team">
     <div class="section-title lang" data-en="Our Team" data-hi="हमारी टीम">हमारी टीम</div>
     <p class="lang" data-en="Our team includes experienced developers and engineers who solve every challenge." data-hi="हमारी टीम में अनुभवी डेवलपर्स और इंजीनियर्स हैं जो हर चुनौती का समाधान करते हैं।">
@@ -376,15 +386,17 @@
     </p>
   </section>
 
+  <!-- Clients -->
   <section id="clients">
     <div class="section-title lang" data-en="Our Clients" data-hi="हमारे क्लाइंट">हमारे क्लाइंट</div>
     <div class="clients">
-      <img src="https://via.placeholder.com/150?text=Client+1" alt="Client 1">
-      <img src="https://via.placeholder.com/150?text=Client+2" alt="Client 2">
-      <img src="https://via.placeholder.com/150?text=Client+3" alt="Client 3">
+      <img src="https://via.placeholder.com/150x266?text=Client+1" alt="Client 1">
+      <img src="https://via.placeholder.com/150x266?text=Client+2" alt="Client 2">
+      <img src="https://via.placeholder.com/150x266?text=Client+3" alt="Client 3">
     </div>
   </section>
 
+  <!-- Contact -->
   <section id="contact" class="contact">
     <div class="section-title lang" data-en="Contact" data-hi="संपर्क करें">संपर्क करें</div>
     <p><b>📞</b> <a href="tel:+917879342457">7879342457</a></p>
@@ -394,10 +406,12 @@
 
   <a class="whatsapp" href="https://wa.me/917879342457" target="_blank">💬</a>
 
+  <!-- Footer -->
   <footer>
     © 2025 DJB Tech · Designed by Dalchand Ahirwar
   </footer>
 
+  <!-- Script -->
   <script>
     function toggleMenu() {
       const menu = document.getElementById('mainMenu');
@@ -452,11 +466,4 @@
         btn.addEventListener('click', () => {
           const detail = btn.previousElementSibling;
           const isVisible = detail.style.display === 'block';
-          detail.style.display = isVisible ? 'none' : 'block';
-          btn.textContent = isVisible ? '+' : '−';
-        });
-      });
-    });
-  </script>
-</body>
-</html>
+          detail.style.display =
