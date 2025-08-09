@@ -30,9 +30,12 @@
 
     header img {
       height: 70px;
+      width: 70px;
       margin-right: 16px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+      border: 2px solid #fff;
+      object-fit: cover;
     }
 
     header h1 {
@@ -117,6 +120,7 @@
       border: 4px solid #fff;
       object-fit: cover;
       margin-bottom: 16px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
     }
 
     section {
@@ -224,7 +228,6 @@
       right: 10px;
     }
 
-    /* Updated Gallery & Clients Image Size to 9:16 */
     .gallery, .clients {
       display: flex;
       overflow-x: auto;
@@ -291,7 +294,7 @@
   <!-- Header -->
   <header>
     <div class="logo-section">
-      <img src="logo.png" alt="Logo">
+      <img src="djb-logo.png" alt="DJB Tech Logo">
       <div>
         <h1 class="lang" data-en="DJB Tech" data-hi="डीजेबी टेक">DJB Tech</h1>
         <p class="lang" data-en="Founder: Dalchand Ahirwar" data-hi="संस्थापक: दलचंद अहिरवार">Founder: Dalchand Ahirwar</p>
@@ -313,6 +316,7 @@
 
   <!-- Hero Section -->
   <div class="hero">
+    <img src="djb-logo.png" alt="DJB Logo Hero">
     <p class="lang" data-en="Welcome to DJB Tech" data-hi="डीजेबी टेक में आपका स्वागत है">Welcome to DJB Tech</p>
   </div>
 
@@ -447,7 +451,6 @@
       });
     }
 
-    // Filter Services
     function filterServices(category, btn) {
       const cards = document.querySelectorAll('.service-card');
       const buttons = document.querySelectorAll('.service-filters button');
@@ -460,10 +463,4 @@
       });
     }
 
-    // Toggle Details
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const detail = btn.previousElementSibling;
-          const isVisible = detail.style.display === 'block';
-          detail.style.display =
+    document.addEventListener('
