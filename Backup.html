@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local Media Backup + QR Generator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  .upload-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  input[type=file] {
+    padding: 10px;
+  }
+  .media-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+    gap: 20px;
+  }
+  .card {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  img, video {
+    width: 100%;
+    border-radius: 8px;
+  }
+  canvas {
+    margin-top: 10px;
+  }
+  button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+</style>
+</head>
+<body>
+
+<h1>📦 Local Media Backup + QR Code</h1>
+
+<div class="upload-box">
+  <input type="file" id="fileInput" accept="image/*,video/*" multiple>
+  <button onclick="uploadFiles()">Upload & Generate QR</button>
+</div>
+
+<div class="actions">
+  <button onclick="exportBackup()">💾 Export Backup</button>
+  <input type="file" id="restoreInput" accept=".json" style="display:none" onchange="restoreBackup(event)">
+  <button onclick="document.getElementById('restoreInput').click()">📂 Restore Backup</button>
+  <button onclick="clearAll()">🗑️ Clear All</button>
+</div>
+
+<div class="media-list" id="mediaList"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+  const mediaList = document.getElementById("mediaList");
+  let storedMedia = JSON.parse(localStorage.getItem("mediaBackup") || "[]");
+
+  // 🟢 Load saved media on start
+  window.onload = () => {
+    storedMedia.forEach(item => renderCard(item));
+  };
+
+  function uploadFiles() {
+    const files = document.getElementById("fileInput").files;
+    if (!files.length) return alert("Please select files!");
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const dataURL = e.target.result;
+        const mediaObj = { name: file.name, type: file.type, dataURL };
+        storedMedia.push(mediaObj);
+        localStorage.setItem("mediaBackup", JSON.stringify(storedMedia));
+        renderCard(mediaObj);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderCard(item) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    if (item.type.startsWith("image")) {
+      const img = document.createElement("img");
+      img.src = item.dataURL;
+      card.appendChild(img);
+    } else if (item.type.startsWith("video")) {
+      const vid = document.createElement("video");
+      vid.src = item.dataURL;
+      vid.controls = true;
+      card.appendChild(vid);
+    }
+
+    const canvas = document.createElement("canvas");
+    QRCode.toCanvas(canvas, item.dataURL, { width: 150 }, err => {
+      if (err) console.error(err);
+    });
+    card.appendChild(canvas);
+
+    const btn = document.createElement("button");
+    btn.innerText = "Download QR";
+    btn.onclick = () => {
+      const link = document.createElement("a");
+      link.download = item.name + "_QR.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+    card.appendChild(btn);
+
+    mediaList.appendChild(card);
+  }
+
+  // 💾 Export backup JSON
+  function exportBackup() {
+    if (!storedMedia.length) return alert("No media to export!");
+    const blob = new Blob([JSON.stringify(storedMedia)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "media_backup.json";
+    link.click();
+  }
+
+  // 📂 Restore from JSON backup
+  function restoreBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        storedMedia = imported;
+        localStorage.setItem("mediaBackup", JSON.stringify(imported));
+        mediaList.innerHTML = "";
+        imported.forEach(item => renderCard(item));
+        alert("Backup restored successfully!");
+      } catch {
+        alert("Invalid backup file!");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // 🗑️ Clear all local data
+  function clearAll() {
+    if (confirm("Are you sure? This will delete all stored media!")) {
+      localStorage.removeItem("mediaBackup");
+      mediaList.innerHTML = "";
+      storedMedia = [];
+    }
+  }
+</script>
+
+</body>
+</html>
