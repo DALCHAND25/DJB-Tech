@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Batch Scanner App</title>
+<title>DWR Batch Scanner</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
@@ -21,6 +21,8 @@ body {
   padding: 20px;
   border-radius: 15px;
 }
+
+h3 { text-align:center; }
 
 label {
   font-weight: bold;
@@ -46,12 +48,12 @@ button {
   color: white;
 }
 
-#reader {
-  margin-top: 10px;
-}
+#reader { margin-top: 10px; }
 
-ul {
-  padding-left: 15px;
+ul { padding-left: 15px; }
+
+li {
+  margin-top: 5px;
 }
 </style>
 </head>
@@ -60,21 +62,72 @@ ul {
 
 <div class="container">
 
-<h3>📦 Batch Scanner</h3>
+<h3>📦 DWR Batch Scanner</h3>
 
 <form id="form">
 
-<label>Name</label>
-<input type="text" name="name" required>
+<!-- Employee -->
+<label>Employee Name</label>
+<select name="name" required>
+<option value="" disabled selected>Select Employee</option>
+<option>Ajay</option>
+<option>Amaan</option>
+<option>Amit</option>
+<option>Atif</option>
+<option>Dalchand</option>
+<option>Dharmendra</option>
+<option>Gourav</option>
+<option>Naresh</option>
+<option>Palak</option>
+<option>Payal</option>
+<option>Ravi</option>
+<option>Riya</option>
+<option>Sameer</option>
+<option>Tarun</option>
+</select>
 
+<!-- Item -->
 <label>Item</label>
-<input type="text" name="item" required>
+<select name="item" required>
+<option value="" disabled selected>-- Select Item --</option>
+<option>10001 - Izi Sky Pro Combo</option>
+<option>10002 - Izi Sky Pro Standalone</option>
+<option>10003 - Izi Mini X Combo</option>
+<option>10004 - Izimini X Standalone</option>
+<option>10005 - Izi Pro Nano Drone</option>
+<option>10011 - Izi Spectra</option>
+<option>10013 - IZI Brephos MICRO</option>
+<option>10014 - IZI Brephos MINI</option>
+<option>10015 - IZI Brephos MINI COMBO</option>
+<option>20001 - Izi One+</option>
+<option>20002 - Izi One Action Camera</option>
+<option>20006 - Izi Iris</option>
+<option>20007 - Izi One Lite</option>
+<option>20008 - IZI ONE PRO</option>
+<option>30001 - Izi Drive+</option>
+<option>30006 - N700</option>
+<option>30007 - IZI DRIVE 360</option>
+<option>40001 - Izi Go X Improved</option>
+<option>40002 - Izi Go X</option>
+<option>40004 - IZI GO X PRO</option>
+<option>40005 - IZI GOX LITE</option>
+<option>50001 - Izi X Microphone</option>
+</select>
+
+<!-- Category -->
+<label>Category</label>
+<select name="category" required>
+<option value="" disabled selected>Select Category</option>
+<option>Super QC</option>
+<option>TBC</option>
+</select>
 
 <label>Gate Pass</label>
 <input type="text" name="gatepass">
 
+<!-- Serial -->
 <label>Serial Number</label>
-<input type="text" id="serial">
+<input type="text" id="serial" placeholder="Scan or Enter & press Enter">
 
 <div id="reader"></div>
 <button type="button" onclick="startScanner()">📷 Scan Serial</button>
@@ -101,49 +154,59 @@ ul {
 let serialArray = [];
 let scanner;
 
-// 📷 Start Scanner
+// 📷 Scanner
 function startScanner() {
   scanner = new Html5Qrcode("reader");
 
   scanner.start(
     { facingMode: "environment" },
     { fps: 10, qrbox: 250 },
-    (decodedText) => {
-
-      if (!serialArray.includes(decodedText)) {
-        serialArray.push(decodedText);
-
-        let li = document.createElement("li");
-        li.innerText = decodedText;
-
-        // ❌ Remove button
-        let btn = document.createElement("button");
-        btn.innerText = "❌";
-        btn.style.marginLeft = "10px";
-
-        btn.onclick = function() {
-          serialArray = serialArray.filter(sn => sn !== decodedText);
-          li.remove();
-        };
-
-        li.appendChild(btn);
-        document.getElementById("serialList").appendChild(li);
-      }
-
-      scanner.stop();
-    }
+    (decodedText) => addSerial(decodedText)
   ).catch(err => alert("Camera Error: " + err));
 }
 
-// 🔗 Google Sheets URL
+// ➕ Add Serial Function
+function addSerial(value) {
+  value = value.trim();
+
+  if (value && !serialArray.includes(value)) {
+    serialArray.push(value);
+
+    let li = document.createElement("li");
+    li.innerText = value;
+
+    let btn = document.createElement("button");
+    btn.innerText = "❌";
+    btn.style.marginLeft = "10px";
+
+    btn.onclick = function() {
+      serialArray = serialArray.filter(sn => sn !== value);
+      li.remove();
+    };
+
+    li.appendChild(btn);
+    document.getElementById("serialList").appendChild(li);
+  }
+}
+
+// ⌨️ Manual Enter Add
+document.getElementById("serial").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    addSerial(this.value);
+    this.value = "";
+  }
+});
+
+// 🔗 Google Sheet URL
 const scriptURL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
-// 🚀 Submit Batch
+// 🚀 Submit
 document.getElementById("form").addEventListener("submit", function(e) {
   e.preventDefault();
 
   if (serialArray.length === 0) {
-    alert("⚠️ Please scan at least one serial");
+    alert("⚠️ Scan at least one serial");
     return;
   }
 
@@ -152,6 +215,7 @@ document.getElementById("form").addEventListener("submit", function(e) {
   const data = {
     name: form.name.value,
     item: form.item.value,
+    category: form.category.value,
     gatepass: form.gatepass.value,
     serials: serialArray,
     status: form.status.value,
@@ -164,7 +228,7 @@ document.getElementById("form").addEventListener("submit", function(e) {
     headers: { "Content-Type": "application/json" }
   })
   .then(() => {
-    alert("✅ Batch Saved to Google Sheet");
+    alert("✅ Batch Saved");
     serialArray = [];
     document.getElementById("serialList").innerHTML = "";
     form.reset();
