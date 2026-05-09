@@ -12,38 +12,60 @@
   </style>
 </head>
 <body>
-  <h2>📋 DWR (IZI Tech)</h2>
-  <form id="dataForm">
-    <input type="text" name="name" placeholder="Name" required><br>
-    <input type="Serial No." name="Serial No." placeholder="Serial No." required><br>
-    <input type="Date" name="Date" placeholder="Date" required><br>
-     <input type="Task Name" name="Task Name" placeholder="Task Name" required><br>
-      <input type="Start Time" name="Start Time" placeholder="Start Time" required><br>
-       <input type="End Time" name="End Time" placeholder="End Time" required><br>
-      
-    
-    
-    
-<textarea name="Remarks" placeholder="Remarks"></textarea><br>
-    <button type="submit">Submit</button>
-  </form>
-  <p id="status"></p>
 
-  <script>
-    const scriptURL = 'PASTE_YOUR_DEPLOYMENT_URL_HERE'; // यहाँ अपना Apps Script URL डालें
+<h2>📋 DWR (IZI Tech)</h2>
 
-    document.getElementById('dataForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const data = {
-        name: e.target.name.value,
-        email: e.target.email.value,
-        phone: e.target.phone.value,
-        message: e.target.message.value
-      };
-      fetch(scriptURL, { method: 'POST', body: JSON.stringify(data) })
-        .then(() => document.getElementById('status').innerText = "✅ Data Saved Successfully!")
-        .catch(err => document.getElementById('status').innerText = "❌ Error: " + err);
-    });
-  </script>
+<form id="dataForm">
+  <input type="text" name="name" placeholder="Name" required><br>
+
+  <input type="text" name="serial" placeholder="Serial No." required><br>
+
+  <input type="date" name="date" required><br>
+
+  <input type="text" name="task" placeholder="Task Name" required><br>
+
+  <input type="time" name="start" required><br>
+
+  <input type="time" name="end" required><br>
+
+  <textarea name="remarks" placeholder="Remarks"></textarea><br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<p id="status"></p>
+
+<script>
+const scriptURL = 'PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE'; // 👈 यहाँ Apps Script URL डालो
+
+document.getElementById('dataForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+
+  const data = {
+    name: form.name.value,
+    serial: form.serial.value,
+    date: form.date.value,
+    task: form.task.value,
+    start: form.start.value,
+    end: form.end.value,
+    remarks: form.remarks.value
+  };
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
+  .then(() => {
+    document.getElementById('status').innerText = "✅ Data Saved Successfully!";
+    form.reset();
+  })
+  .catch(err => {
+    document.getElementById('status').innerText = "❌ Error: " + err;
+  });
+});
+</script>
+
 </body>
 </html>
