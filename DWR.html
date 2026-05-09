@@ -20,7 +20,21 @@
 
 body { font-family: Arial; background:#f2f3f7; padding:20px; }
 
-.container { max-width:400px; margin:auto; background:white; padding:20px; border-radius:15px; }
+
+
+.container {
+
+  max-width:400px;
+
+  margin:auto;
+
+  background:white;
+
+  padding:20px;
+
+  border-radius:15px;
+
+}
 
 
 
@@ -28,7 +42,15 @@ h3, h4 { margin:5px 0; }
 
 
 
-#datetime { font-weight:bold; margin:10px 0; color:green; }
+#datetime {
+
+  font-weight:bold;
+
+  margin:10px 0;
+
+  color:green;
+
+}
 
 
 
@@ -74,7 +96,19 @@ button {
 
 ul { padding-left:15px; }
 
-li button { margin-left:10px; background:red; border:none; color:white; border-radius:5px; }
+li button {
+
+  margin-left:10px;
+
+  background:red;
+
+  border:none;
+
+  color:white;
+
+  border-radius:5px;
+
+}
 
 </style>
 
@@ -90,6 +124,8 @@ li button { margin-left:10px; background:red; border:none; color:white; border-r
 
 
 
+<!-- HEADER -->
+
 <h3>📦 Production (SUPER QC & TBC)</h3>
 
 <h4>Inspection & Testing</h4>
@@ -103,6 +139,8 @@ li button { margin-left:10px; background:red; border:none; color:white; border-r
 <form id="form">
 
 
+
+<!-- Employee -->
 
 <label>Employee Name</label>
 
@@ -142,6 +180,8 @@ li button { margin-left:10px; background:red; border:none; color:white; border-r
 
 
 
+<!-- Item -->
+
 <label>Item</label>
 
 <select id="item" required>
@@ -158,9 +198,45 @@ li button { margin-left:10px; background:red; border:none; color:white; border-r
 
 <option>10005 - Izi Pro Nano Drone</option>
 
+<option>10011 - Izi Spectra</option>
+
+<option>10013 - IZI Brephos MICRO</option>
+
+<option>10014 - IZI Brephos MINI</option>
+
+<option>10015 - IZI Brephos MINI COMBO</option>
+
+<option>20001 - Izi One+</option>
+
+<option>20002 - Izi One Action Camera</option>
+
+<option>20006 - Izi Iris</option>
+
+<option>20007 - Izi One Lite</option>
+
+<option>20008 - IZI ONE PRO</option>
+
+<option>30001 - Izi Drive+</option>
+
+<option>30006 - N700</option>
+
+<option>30007 - IZI DRIVE 360</option>
+
+<option>40001 - Izi Go X Improved</option>
+
+<option>40002 - Izi Go X</option>
+
+<option>40004 - IZI GO X PRO</option>
+
+<option>40005 - IZI GOX LITE</option>
+
+<option>50001 - Izi X Microphone</option>
+
 </select>
 
 
+
+<!-- Category -->
 
 <label>Category</label>
 
@@ -182,9 +258,11 @@ li button { margin-left:10px; background:red; border:none; color:white; border-r
 
 
 
+<!-- Serial -->
+
 <label>Serial Number</label>
 
-<input type="text" id="serial">
+<input type="text" id="serial" placeholder="Enter or Scan">
 
 
 
@@ -208,13 +286,15 @@ li button { margin-left:10px; background:red; border:none; color:white; border-r
 
 <label>Status</label>
 
-<select id="status">
+<select id="status" required>
 
-<option>PASS</option>
+  <option value="" disabled selected>Select Status</option>
 
-<option>HOLD</option>
+  <option>PASS</option>
 
-<option>DEAD</option>
+  <option>HOLD</option>
+
+  <option>DEAD</option>
 
 </select>
 
@@ -248,15 +328,21 @@ let scanning = false;
 
 
 
-/* DATE TIME */
+/* ---------- DATE & TIME ---------- */
 
 function updateDateTime() {
 
-  let now = new Date();
+  const now = new Date();
+
+  const date = now.toLocaleDateString('en-GB');
+
+  const time = now.toLocaleTimeString();
+
+
 
   document.getElementById("datetime").innerText =
 
-    now.toLocaleDateString('en-GB') + " | " + now.toLocaleTimeString();
+    "Date: " + date + " | Time: " + time;
 
 }
 
@@ -266,7 +352,7 @@ updateDateTime();
 
 
 
-/* ADD SERIAL */
+/* ---------- SERIAL ---------- */
 
 function addSerial(value) {
 
@@ -276,7 +362,13 @@ function addSerial(value) {
 
 
 
-  if (serialArray.includes(value)) return alert("Already added");
+  if (serialArray.includes(value)) {
+
+    alert("Already added");
+
+    return;
+
+  }
 
 
 
@@ -298,7 +390,7 @@ function addSerial(value) {
 
   btn.onclick = () => {
 
-    serialArray = serialArray.filter(s => s !== value);
+    serialArray = serialArray.filter(sn => sn !== value);
 
     li.remove();
 
@@ -316,15 +408,31 @@ function addSerial(value) {
 
 function addManual() {
 
-  addSerial(document.getElementById("serial").value);
+  let input = document.getElementById("serial");
 
-  document.getElementById("serial").value = "";
+  addSerial(input.value);
+
+  input.value = "";
 
 }
 
 
 
-/* SCANNER */
+document.getElementById("serial").addEventListener("keydown", function(e){
+
+  if (e.key === "Enter") {
+
+    e.preventDefault();
+
+    addManual();
+
+  }
+
+});
+
+
+
+/* ---------- SCANNER ---------- */
 
 function startScanner() {
 
@@ -366,17 +474,25 @@ function stopScanner() {
 
 
 
-/* WEB APP URL */
+/* ---------- SUBMIT ---------- */
 
 const scriptURL = "https://script.google.com/macros/s/AKfycbzLqH_rA8dNoDizHwf9W_B8T9ST3mejZ3X5f4hDNDtTXd54982iqC_AxMMNy5_hrFU/exec";
 
 
 
-/* SUBMIT */
-
 document.getElementById("form").addEventListener("submit", function(e){
 
   e.preventDefault();
+
+
+
+  if (serialArray.length === 0) {
+
+    alert("Scan at least one serial");
+
+    return;
+
+  }
 
 
 
@@ -394,7 +510,9 @@ document.getElementById("form").addEventListener("submit", function(e){
 
     status: document.getElementById("status").value,
 
-    remark: document.getElementById("remark").value
+    remark: document.getElementById("remark").value,
+
+    datetime: new Date().toISOString()
 
   };
 
@@ -409,8 +527,6 @@ document.getElementById("form").addEventListener("submit", function(e){
     headers: { "Content-Type": "application/json" }
 
   })
-
-  .then(res => res.text())
 
   .then(() => {
 
@@ -435,5 +551,4 @@ document.getElementById("form").addEventListener("submit", function(e){
 </body>
 
 </html>
-
 
