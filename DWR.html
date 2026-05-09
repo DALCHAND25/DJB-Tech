@@ -1,369 +1,177 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Gate Pass Scanner App</title>
-
-
-
-<!-- Scanner Library -->
+<title>Batch Scanner App</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
-
-
 <style>
-
 body {
-
   font-family: Arial;
-
   background: #f2f3f7;
-
-  margin: 0;
-
   padding: 20px;
-
 }
-
-
 
 .container {
-
   max-width: 400px;
-
   margin: auto;
-
-  background: #fff;
-
+  background: white;
   padding: 20px;
-
   border-radius: 15px;
-
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-
 }
-
-
-
-.top-box {
-
-  text-align: center;
-
-  background: #f5f6fa;
-
-  padding: 10px;
-
-  border-radius: 10px;
-
-  margin-bottom: 15px;
-
-}
-
-
 
 label {
-
   font-weight: bold;
-
   margin-top: 10px;
-
   display: block;
-
 }
-
-
 
 input, select, textarea {
-
   width: 100%;
-
-  padding: 12px;
-
+  padding: 10px;
   margin-top: 5px;
-
   border-radius: 10px;
-
-  border: 1px solid #ddd;
-
+  border: 1px solid #ccc;
 }
-
-
-
-textarea { height: 80px; }
-
-
 
 button {
-
   width: 100%;
-
-  padding: 14px;
-
-  margin-top: 15px;
-
+  padding: 12px;
+  margin-top: 10px;
   border: none;
-
-  border-radius: 25px;
-
-  background: linear-gradient(to right, #007bff, #0056d2);
-
+  border-radius: 20px;
+  background: blue;
   color: white;
-
-  font-size: 16px;
-
 }
-
-
 
 #reader {
-
   margin-top: 10px;
-
 }
 
+ul {
+  padding-left: 15px;
+}
 </style>
-
-
-
 </head>
-
-
 
 <body>
 
-
-
 <div class="container">
 
-
-
-<div class="top-box" id="datetime"></div>
-
-
+<h3>📦 Batch Scanner</h3>
 
 <form id="form">
 
+<label>Name</label>
+<input type="text" name="name" required>
 
+<label>Item</label>
+<input type="text" name="item" required>
 
-<label>Employee Name</label>
-
-<select name="name">
-
-<option>Select Employee</option>
-
-<option>Rahul</option>
-
-<option>Amit</option>
-
-</select>
-
-
-
-<label>Item Name</label>
-
-<select name="item">
-
-<option>Select Item</option>
-
-<option>Laptop</option>
-
-<option>Drone</option>
-
-</select>
-
-
-
-<label>Category</label>
-
-<select name="category">
-
-<option>Select Category</option>
-
-<option>IT</option>
-
-<option>Electronics</option>
-
-</select>
-
-
-
-<label>Gate Pass No</label>
-
-<input type="text" name="gatepass" placeholder="Enter Gate Pass Number">
-
-
+<label>Gate Pass</label>
+<input type="text" name="gatepass">
 
 <label>Serial Number</label>
-
-<input type="text" id="serial" name="serial" placeholder="Enter Serial Number">
-
-
-
-<!-- Scanner -->
+<input type="text" id="serial">
 
 <div id="reader"></div>
-
 <button type="button" onclick="startScanner()">📷 Scan Serial</button>
 
-
+<h4>Scanned Serial List</h4>
+<ul id="serialList"></ul>
 
 <label>Status</label>
-
 <select name="status">
-
-<option>Select Status</option>
-
-<option>IN</option>
-
 <option>OUT</option>
-
+<option>IN</option>
 </select>
 
-
-
 <label>Remark</label>
+<textarea name="remark"></textarea>
 
-<textarea name="remark" placeholder="Write Remark"></textarea>
-
-
-
-<button type="submit">Submit Data</button>
-
-
+<button type="submit">Submit Batch</button>
 
 </form>
 
-
-
 </div>
 
-
-
 <script>
-
-// 🔹 Date Time
-
-setInterval(() => {
-
-  const now = new Date();
-
-  document.getElementById("datetime").innerText =
-
-    "Date : " + now.toLocaleDateString() +
-
-    " | Time : " + now.toLocaleTimeString();
-
-}, 1000);
-
-
-
-// 🔹 Scanner
-
+let serialArray = [];
 let scanner;
 
-
-
+// 📷 Start Scanner
 function startScanner() {
-
   scanner = new Html5Qrcode("reader");
 
-
-
   scanner.start(
-
     { facingMode: "environment" },
-
     { fps: 10, qrbox: 250 },
-
     (decodedText) => {
 
-      document.getElementById("serial").value = decodedText;
+      if (!serialArray.includes(decodedText)) {
+        serialArray.push(decodedText);
+
+        let li = document.createElement("li");
+        li.innerText = decodedText;
+
+        // ❌ Remove button
+        let btn = document.createElement("button");
+        btn.innerText = "❌";
+        btn.style.marginLeft = "10px";
+
+        btn.onclick = function() {
+          serialArray = serialArray.filter(sn => sn !== decodedText);
+          li.remove();
+        };
+
+        li.appendChild(btn);
+        document.getElementById("serialList").appendChild(li);
+      }
 
       scanner.stop();
-
-      alert("✅ Scanned: " + decodedText);
-
     }
-
   ).catch(err => alert("Camera Error: " + err));
-
 }
 
-
-
-// 🔹 Google Sheets URL
-
+// 🔗 Google Sheets URL
 const scriptURL = "PASTE_YOUR_WEB_APP_URL_HERE";
 
-
-
-// 🔹 Form Submit
-
+// 🚀 Submit Batch
 document.getElementById("form").addEventListener("submit", function(e) {
-
   e.preventDefault();
 
-
+  if (serialArray.length === 0) {
+    alert("⚠️ Please scan at least one serial");
+    return;
+  }
 
   const form = e.target;
 
-
-
   const data = {
-
     name: form.name.value,
-
     item: form.item.value,
-
-    category: form.category.value,
-
     gatepass: form.gatepass.value,
-
-    serial: form.serial.value,
-
+    serials: serialArray,
     status: form.status.value,
-
     remark: form.remark.value
-
   };
 
-
-
   fetch(scriptURL, {
-
     method: "POST",
-
     body: JSON.stringify(data),
-
     headers: { "Content-Type": "application/json" }
-
   })
-
   .then(() => {
-
-    alert("✅ Data Saved in Sheet");
-
+    alert("✅ Batch Saved to Google Sheet");
+    serialArray = [];
+    document.getElementById("serialList").innerHTML = "";
     form.reset();
-
   })
-
   .catch(err => alert("❌ Error: " + err));
-
 });
-
 </script>
 
-
-
 </body>
-
 </html>
-
-
