@@ -1,42 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Data Entry Form</title>
-  <style>
-    body { font-family: Arial; text-align: center; margin-top: 40px; background: #f2f2f2; }
-    form { display: inline-block; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background: white; }
-    input, textarea { width: 250px; padding: 10px; margin: 5px; border: 1px solid #999; border-radius: 5px; }
-    button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #0056b3; }
-  </style>
+<meta charset="UTF-8">
+<title>DWR Form</title>
+<style>
+body { font-family: Arial; text-align: center; margin-top: 40px; background: #f2f2f2; }
+form { display: inline-block; padding: 20px; border-radius: 10px; background: white; }
+input, textarea { width: 250px; padding: 10px; margin: 5px; }
+button { background: #007bff; color: white; padding: 10px 20px; border: none; }
+</style>
 </head>
+
 <body>
 
 <h2>📋 DWR (IZI Tech)</h2>
 
 <form id="dataForm">
-  <input type="text" name="name" placeholder="Name" required><br>
-
-  <input type="text" name="serial" placeholder="Serial No." required><br>
-
-  <input type="date" name="date" required><br>
-
-  <input type="text" name="task" placeholder="Task Name" required><br>
-
-  <input type="time" name="start" required><br>
-
-  <input type="time" name="end" required><br>
-
-  <textarea name="remarks" placeholder="Remarks"></textarea><br>
-
-  <button type="submit">Submit</button>
+<input type="text" name="name" placeholder="Name" required><br>
+<input type="text" name="serial" placeholder="Serial No." required><br>
+<input type="date" name="date" required><br>
+<input type="text" name="task" placeholder="Task Name" required><br>
+<input type="time" name="start" required><br>
+<input type="time" name="end" required><br>
+<textarea name="remarks" placeholder="Remarks"></textarea><br>
+<button type="submit">Submit</button>
 </form>
 
 <p id="status"></p>
 
 <script>
-const scriptURL = 'PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE'; // 👈 यहाँ Apps Script URL डालो
+const scriptURL = 'PASTE_YOUR_SCRIPT_URL_HERE';
 
 document.getElementById('dataForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -58,7 +51,7 @@ document.getElementById('dataForm').addEventListener('submit', function(e) {
     body: JSON.stringify(data)
   })
   .then(() => {
-    document.getElementById('status').innerText = "✅ Data Saved Successfully!";
+    document.getElementById('status').innerText = "✅ Data Saved!";
     form.reset();
   })
   .catch(err => {
