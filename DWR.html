@@ -1,278 +1,439 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>DWR Scanner</title>
+
+
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
+
+
 <style>
+
 body { font-family: Arial; background:#f2f3f7; padding:20px; }
 
-.container {
-  max-width:400px;
-  margin:auto;
-  background:white;
-  padding:20px;
-  border-radius:15px;
-}
+.container { max-width:400px; margin:auto; background:white; padding:20px; border-radius:15px; }
+
+
 
 h3, h4 { margin:5px 0; }
 
-#datetime {
-  font-weight:bold;
-  margin:10px 0;
-  color:green;
-}
+
+
+#datetime { font-weight:bold; margin:10px 0; color:green; }
+
+
 
 label { font-weight:bold; display:block; margin-top:10px; }
 
+
+
 input, select, textarea {
+
   width:100%;
+
   padding:10px;
+
   margin-top:5px;
+
   border-radius:10px;
+
   border:1px solid #ccc;
+
 }
+
+
 
 button {
+
   width:100%;
+
   padding:12px;
+
   margin-top:10px;
+
   border:none;
+
   border-radius:20px;
+
   background:blue;
+
   color:white;
+
 }
 
+
+
 ul { padding-left:15px; }
-li button {
-  margin-left:10px;
-  background:red;
-  border:none;
-  color:white;
-  border-radius:5px;
-}
+
+li button { margin-left:10px; background:red; border:none; color:white; border-radius:5px; }
+
 </style>
+
 </head>
+
+
 
 <body>
 
+
+
 <div class="container">
 
-<!-- HEADER -->
+
+
 <h3>📦 Production (SUPER QC & TBC)</h3>
+
 <h4>Inspection & Testing</h4>
+
+
 
 <div id="datetime"></div>
 
+
+
 <form id="form">
 
-<!-- Employee -->
+
+
 <label>Employee Name</label>
+
 <select id="name" required>
+
 <option value="">Select Employee</option>
+
 <option>Ajay</option>
+
 <option>Amaan</option>
+
 <option>Amit</option>
+
 <option>Atif</option>
+
 <option>Dalchand</option>
+
 <option>Dharmendra</option>
+
 <option>Gourav</option>
+
 <option>Naresh</option>
+
 <option>Palak</option>
+
 <option>Payal</option>
+
 <option>Ravi</option>
+
 <option>Riya</option>
+
 <option>Sameer</option>
+
 <option>Tarun</option>
+
 </select>
 
-<!-- Item -->
+
+
 <label>Item</label>
+
 <select id="item" required>
+
 <option value="">Select Item</option>
+
 <option>10001 - Izi Sky Pro Combo</option>
+
 <option>10002 - Izi Sky Pro Standalone</option>
+
 <option>10003 - Izi Mini X Combo</option>
+
 <option>10004 - Izimini X Standalone</option>
+
 <option>10005 - Izi Pro Nano Drone</option>
-<option>10011 - Izi Spectra</option>
-<option>10013 - IZI Brephos MICRO</option>
-<option>10014 - IZI Brephos MINI</option>
-<option>10015 - IZI Brephos MINI COMBO</option>
-<option>20001 - Izi One+</option>
-<option>20002 - Izi One Action Camera</option>
-<option>20006 - Izi Iris</option>
-<option>20007 - Izi One Lite</option>
-<option>20008 - IZI ONE PRO</option>
-<option>30001 - Izi Drive+</option>
-<option>30006 - N700</option>
-<option>30007 - IZI DRIVE 360</option>
-<option>40001 - Izi Go X Improved</option>
-<option>40002 - Izi Go X</option>
-<option>40004 - IZI GO X PRO</option>
-<option>40005 - IZI GOX LITE</option>
-<option>50001 - Izi X Microphone</option>
+
 </select>
 
-<!-- Category -->
+
+
 <label>Category</label>
+
 <select id="category" required>
+
 <option value="">Select Category</option>
+
 <option>Super QC</option>
+
 <option>TBC</option>
+
 </select>
+
+
 
 <label>Gate Pass</label>
+
 <input type="text" id="gatepass">
 
-<!-- Serial -->
+
+
 <label>Serial Number</label>
-<input type="text" id="serial" placeholder="Enter or Scan">
+
+<input type="text" id="serial">
+
+
 
 <button type="button" onclick="addManual()">➕ Add Serial</button>
 
+
+
 <div id="reader"></div>
+
 <button type="button" onclick="startScanner()">📷 Start Scan</button>
+
 <button type="button" onclick="stopScanner()">⛔ Stop Scan</button>
 
+
+
 <h4>Serial List</h4>
+
 <ul id="list"></ul>
 
+
+
 <label>Status</label>
-<select id="status" required>
-  <option value="" disabled selected>Select Status</option>
-  <option>PASS</option>
-  <option>HOLD</option>
-  <option>DEAD</option>
+
+<select id="status">
+
+<option>PASS</option>
+
+<option>HOLD</option>
+
+<option>DEAD</option>
+
 </select>
 
+
+
 <label>Remark</label>
+
 <textarea id="remark"></textarea>
+
+
 
 <button type="submit">Submit</button>
 
+
+
 </form>
+
+
 
 </div>
 
+
+
 <script>
+
 let serialArray = [];
+
 let scanner;
+
 let scanning = false;
 
-/* ---------- DATE & TIME ---------- */
+
+
+/* DATE TIME */
+
 function updateDateTime() {
-  const now = new Date();
-  const date = now.toLocaleDateString('en-GB');
-  const time = now.toLocaleTimeString();
+
+  let now = new Date();
 
   document.getElementById("datetime").innerText =
-    "Date: " + date + " | Time: " + time;
+
+    now.toLocaleDateString('en-GB') + " | " + now.toLocaleTimeString();
+
 }
+
 setInterval(updateDateTime, 1000);
+
 updateDateTime();
 
-/* ---------- SERIAL ---------- */
+
+
+/* ADD SERIAL */
+
 function addSerial(value) {
+
   value = value.trim();
+
   if (!value) return;
 
-  if (serialArray.includes(value)) {
-    alert("Already added");
-    return;
-  }
+
+
+  if (serialArray.includes(value)) return alert("Already added");
+
+
 
   serialArray.push(value);
 
+
+
   let li = document.createElement("li");
+
   li.innerText = value;
 
+
+
   let btn = document.createElement("button");
+
   btn.innerText = "❌";
 
+
+
   btn.onclick = () => {
-    serialArray = serialArray.filter(sn => sn !== value);
+
+    serialArray = serialArray.filter(s => s !== value);
+
     li.remove();
+
   };
+
+
 
   li.appendChild(btn);
+
   document.getElementById("list").appendChild(li);
+
 }
+
+
 
 function addManual() {
-  let input = document.getElementById("serial");
-  addSerial(input.value);
-  input.value = "";
+
+  addSerial(document.getElementById("serial").value);
+
+  document.getElementById("serial").value = "";
+
 }
 
-document.getElementById("serial").addEventListener("keydown", function(e){
-  if (e.key === "Enter") {
-    e.preventDefault();
-    addManual();
-  }
-});
 
-/* ---------- SCANNER ---------- */
+
+/* SCANNER */
+
 function startScanner() {
+
   if (scanning) return;
 
+
+
   scanner = new Html5Qrcode("reader");
+
   scanning = true;
 
+
+
   scanner.start(
+
     { facingMode: "environment" },
+
     { fps: 10, qrbox: 250 },
+
     text => addSerial(text)
+
   );
+
 }
+
+
 
 function stopScanner() {
+
   if (scanner && scanning) {
+
     scanner.stop();
+
     scanning = false;
+
   }
+
 }
 
-/* ---------- SUBMIT ---------- */
-const scriptURL =
-  "https://script.google.com/macros/s/AKfycbzLqH_rA8dNoDizHwf9W_B8T9ST3mejZ3X5f4hDNDtTXd54982iqC_AxMMNy5_hrFU/exec";
+
+
+/* WEB APP URL */
+
+const scriptURL = "https://script.google.com/macros/s/AKfycbzLqH_rA8dNoDizHwf9W_B8T9ST3mejZ3X5f4hDNDtTXd54982iqC_AxMMNy5_hrFU/exec";
+
+
+
+/* SUBMIT */
 
 document.getElementById("form").addEventListener("submit", function(e){
+
   e.preventDefault();
 
-  if (serialArray.length === 0) {
-    alert("Scan at least one serial");
-    return;
-  }
+
 
   const data = {
+
     name: document.getElementById("name").value,
+
     item: document.getElementById("item").value,
+
     category: document.getElementById("category").value,
+
     gatepass: document.getElementById("gatepass").value,
+
     serials: serialArray,
+
     status: document.getElementById("status").value,
-    remark: document.getElementById("remark").value,
-    datetime: new Date().toISOString()
+
+    remark: document.getElementById("remark").value
+
   };
 
+
+
   fetch(scriptURL, {
+
     method: "POST",
+
     body: JSON.stringify(data),
+
     headers: { "Content-Type": "application/json" }
+
   })
+
+  .then(res => res.text())
+
   .then(() => {
+
     alert("Saved Successfully");
+
     serialArray = [];
+
     document.getElementById("list").innerHTML = "";
+
     document.getElementById("form").reset();
+
   })
+
   .catch(err => alert("Error: " + err));
+
 });
+
 </script>
 
+
+
 </body>
+
 </html>
+
+
