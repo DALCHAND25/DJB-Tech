@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Gate Pass Scanner App</title>
+
+
+
+<!-- Scanner Library -->
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+
+
+<style>
+
+body {
+
+  font-family: Arial;
+
+  background: #f2f3f7;
+
+  margin: 0;
+
+  padding: 20px;
+
+}
+
+
+
+.container {
+
+  max-width: 400px;
+
+  margin: auto;
+
+  background: #fff;
+
+  padding: 20px;
+
+  border-radius: 15px;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+}
+
+
+
+.top-box {
+
+  text-align: center;
+
+  background: #f5f6fa;
+
+  padding: 10px;
+
+  border-radius: 10px;
+
+  margin-bottom: 15px;
+
+}
+
+
+
+label {
+
+  font-weight: bold;
+
+  margin-top: 10px;
+
+  display: block;
+
+}
+
+
+
+input, select, textarea {
+
+  width: 100%;
+
+  padding: 12px;
+
+  margin-top: 5px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ddd;
+
+}
+
+
+
+textarea { height: 80px; }
+
+
+
+button {
+
+  width: 100%;
+
+  padding: 14px;
+
+  margin-top: 15px;
+
+  border: none;
+
+  border-radius: 25px;
+
+  background: linear-gradient(to right, #007bff, #0056d2);
+
+  color: white;
+
+  font-size: 16px;
+
+}
+
+
+
+#reader {
+
+  margin-top: 10px;
+
+}
+
+</style>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="container">
+
+
+
+<div class="top-box" id="datetime"></div>
+
+
+
+<form id="form">
+
+
+
+<label>Employee Name</label>
+
+<select name="name">
+
+<option>Select Employee</option>
+
+<option>Rahul</option>
+
+<option>Amit</option>
+
+</select>
+
+
+
+<label>Item Name</label>
+
+<select name="item">
+
+<option>Select Item</option>
+
+<option>Laptop</option>
+
+<option>Drone</option>
+
+</select>
+
+
+
+<label>Category</label>
+
+<select name="category">
+
+<option>Select Category</option>
+
+<option>IT</option>
+
+<option>Electronics</option>
+
+</select>
+
+
+
+<label>Gate Pass No</label>
+
+<input type="text" name="gatepass" placeholder="Enter Gate Pass Number">
+
+
+
+<label>Serial Number</label>
+
+<input type="text" id="serial" name="serial" placeholder="Enter Serial Number">
+
+
+
+<!-- Scanner -->
+
+<div id="reader"></div>
+
+<button type="button" onclick="startScanner()">📷 Scan Serial</button>
+
+
+
+<label>Status</label>
+
+<select name="status">
+
+<option>Select Status</option>
+
+<option>IN</option>
+
+<option>OUT</option>
+
+</select>
+
+
+
+<label>Remark</label>
+
+<textarea name="remark" placeholder="Write Remark"></textarea>
+
+
+
+<button type="submit">Submit Data</button>
+
+
+
+</form>
+
+
+
+</div>
+
+
+
+<script>
+
+// 🔹 Date Time
+
+setInterval(() => {
+
+  const now = new Date();
+
+  document.getElementById("datetime").innerText =
+
+    "Date : " + now.toLocaleDateString() +
+
+    " | Time : " + now.toLocaleTimeString();
+
+}, 1000);
+
+
+
+// 🔹 Scanner
+
+let scanner;
+
+
+
+function startScanner() {
+
+  scanner = new Html5Qrcode("reader");
+
+
+
+  scanner.start(
+
+    { facingMode: "environment" },
+
+    { fps: 10, qrbox: 250 },
+
+    (decodedText) => {
+
+      document.getElementById("serial").value = decodedText;
+
+      scanner.stop();
+
+      alert("✅ Scanned: " + decodedText);
+
+    }
+
+  ).catch(err => alert("Camera Error: " + err));
+
+}
+
+
+
+// 🔹 Google Sheets URL
+
+const scriptURL = "PASTE_YOUR_WEB_APP_URL_HERE";
+
+
+
+// 🔹 Form Submit
+
+document.getElementById("form").addEventListener("submit", function(e) {
+
+  e.preventDefault();
+
+
+
+  const form = e.target;
+
+
+
+  const data = {
+
+    name: form.name.value,
+
+    item: form.item.value,
+
+    category: form.category.value,
+
+    gatepass: form.gatepass.value,
+
+    serial: form.serial.value,
+
+    status: form.status.value,
+
+    remark: form.remark.value
+
+  };
+
+
+
+  fetch(scriptURL, {
+
+    method: "POST",
+
+    body: JSON.stringify(data),
+
+    headers: { "Content-Type": "application/json" }
+
+  })
+
+  .then(() => {
+
+    alert("✅ Data Saved in Sheet");
+
+    form.reset();
+
+  })
+
+  .catch(err => alert("❌ Error: " + err));
+
+});
+
+</script>
+
+
+
+</body>
+
+</html>
+
+
