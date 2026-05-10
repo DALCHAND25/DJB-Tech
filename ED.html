@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Data Form</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px #ccc;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      padding: 10px;
+      border: none;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Employee Data Form</h2>
+
+<form id="empForm">
+  
+  <input type="date" name="date" required>
+  
+  <input type="text" name="name" placeholder="Name" required>
+  
+  <input type="tel" name="mobile" placeholder="Mobile Number" required>
+  
+  <input type="email" name="email" placeholder="Email ID" required>
+  
+  <textarea name="address" placeholder="Address" required></textarea>
+  
+  <textarea name="remarks" placeholder="Remarks"></textarea>
+  
+  <button type="submit">Submit</button>
+
+</form>
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbxnGKoX-lPLCgOVd8kJpF88Mu6sBATtHU9O8SwodwiBf4K6RdBy8gBhqJzsmhiN4m8Z/exec";  // 👈 yaha apna App Script URL daalo
+
+document.getElementById("empForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  let formData = new FormData(this);
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: formData
+  })
+  .then(response => alert("Data Saved Successfully ✅"))
+  .catch(error => alert("Error ❌: " + error.message));
+});
+</script>
+
+</body>
+</html>
