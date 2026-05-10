@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DWR Scanner System</title>
+<title>DWR Scanner</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
@@ -19,15 +19,7 @@ input, select, textarea, button {
 
 button { background:blue; color:white; border:none; }
 ul { padding-left:20px; }
-li { margin-top:5px; }
-
-li button {
-  margin-left:10px;
-  background:red;
-  border:none;
-  color:white;
-  border-radius:5px;
-}
+li button { margin-left:10px; background:red; color:white; border:none; }
 </style>
 </head>
 
@@ -94,6 +86,7 @@ li button {
 
 <input id="gatepass" placeholder="Gate Pass">
 
+<!-- SERIAL -->
 <input id="serial" placeholder="Serial Number">
 
 <button type="button" onclick="addSerial()">➕ Add Serial</button>
@@ -106,6 +99,7 @@ li button {
 <h4>Serial List</h4>
 <ul id="list"></ul>
 
+<!-- STATUS -->
 <select id="status" required>
 <option value="">Select Status</option>
 <option>PASS</option>
@@ -154,7 +148,7 @@ function addSerial(value) {
   document.getElementById("serial").value = "";
 }
 
-/* START SCANNER */
+/* SCANNER */
 function startScanner() {
   if (scanning) return;
 
@@ -164,12 +158,10 @@ function startScanner() {
   scanner.start(
     { facingMode: "environment" },
     { fps: 10, qrbox: 250 },
-    (decodedText) => addSerial(decodedText),
-    (error) => {}
+    (decodedText) => addSerial(decodedText)
   );
 }
 
-/* STOP SCANNER */
 function stopScanner() {
   if (scanner && scanning) {
     scanner.stop().then(() => {
@@ -203,23 +195,19 @@ document.getElementById("form").addEventListener("submit", function(e){
 
   fetch(scriptURL, {
     method: "POST",
+    body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(data)
+    mode: "no-cors"
   })
-  .then(res => res.text())
-  .then(res => {
+  .then(() => {
     alert("Saved Successfully ✔");
-
     serialArray = [];
     document.getElementById("list").innerHTML = "";
     document.getElementById("form").reset();
   })
-  .catch(err => {
-    alert("Error: " + err);
-    console.log(err);
-  });
+  .catch(err => alert("Error: " + err));
 });
 </script>
 
