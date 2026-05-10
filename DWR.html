@@ -1,46 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Gate Pass System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DWR Scanner System</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body { font-family: Arial; background:#f2f3f7; padding:20px; }
+.container { max-width:450px; margin:auto; background:white; padding:20px; border-radius:15px; }
+h3 { text-align:center; }
+
+input, select, textarea, button {
+  width:100%; padding:10px; margin-top:10px;
+  border-radius:10px; border:1px solid #ccc;
+}
+
+button { background:blue; color:white; border:none; }
+ul { padding-left:20px; }
+li { margin-top:5px; }
+
+li button {
+  margin-left:10px;
+  background:red;
+  border:none;
+  color:white;
+  border-radius:5px;
+}
+</style>
 </head>
 
 <body>
 
-<h2>Gate Pass Entry</h2>
+<div class="container">
 
-<input type="text" id="name" placeholder="Enter Name"><br><br>
-<input type="text" id="sn" placeholder="Enter SN Number"><br><br>
+<h3>📦 Production (SUPER QC & TBC)<br>Inspection & Testing</h3>
 
-<button onclick="sendData()">Submit</button>
+<form id="form">
+
+<!-- EMPLOYEE -->
+<select id="name" required>
+<option value="">Select Employee</option>
+<option>Ajay</option>
+<option>Amaan</option>
+<option>Amit</option>
+<option>Atif</option>
+<option>Dalchand</option>
+<option>Dharmendra</option>
+<option>Gourav</option>
+<option>Naresh</option>
+<option>Palak</option>
+<option>Payal</option>
+<option>Ravi</option>
+<option>Riya</option>
+<option>Sameer</option>
+<option>Tarun</option>
+</select>
+
+<!-- ITEM -->
+<select id="item" required>
+<option value="">Select Item</option>
+<option>10001 - Izi Sky Pro Combo</option>
+<option>10002 - Izi Sky Pro Standalone</option>
+<option>10003 - Izi Mini X Combo</option>
+<option>10004 - Izimini X Standalone</option>
+<option>10005 - Izi Pro Nano Drone</option>
+<option>10011 - Izi Spectra</option>
+<option>10013 - IZI Brephos MICRO</option>
+<option>10014 - IZI Brephos MINI</option>
+<option>10015 - IZI Brephos MINI COMBO</option>
+<option>20001 - Izi One+</option>
+<option>20002 - Izi One Action Camera</option>
+<option>20006 - Izi Iris</option>
+<option>20007 - Izi One Lite</option>
+<option>20008 - IZI ONE PRO</option>
+<option>30001 - Izi Drive+</option>
+<option>30006 - N700</option>
+<option>30007 - IZI DRIVE 360</option>
+<option>40001 - Izi Go X Improved</option>
+<option>40002 - Izi Go X</option>
+<option>40004 - IZI GO X PRO</option>
+<option>40005 - IZI GOX LITE</option>
+<option>50001 - Izi X Microphone</option>
+</select>
+
+<!-- CATEGORY -->
+<select id="category" required>
+<option value="">Select Category</option>
+<option>Super QC</option>
+<option>TBC</option>
+</select>
+
+<input id="gatepass" placeholder="Gate Pass">
+
+<input id="serial" placeholder="Serial Number">
+
+<button type="button" onclick="addSerial()">➕ Add Serial</button>
+
+<button type="button" onclick="startScanner()">📷 Start Scan</button>
+<button type="button" onclick="stopScanner()">⛔ Stop Scan</button>
+
+<div id="reader"></div>
+
+<h4>Serial List</h4>
+<ul id="list"></ul>
+
+<select id="status" required>
+<option value="">Select Status</option>
+<option>PASS</option>
+<option>HOLD</option>
+<option>DEAD</option>
+</select>
+
+<textarea id="remark" placeholder="Remark"></textarea>
+
+<button type="submit">Submit</button>
+
+</form>
+
+</div>
 
 <script>
+let serialArray = [];
+let scanner = null;
+let scanning = false;
 
-// 🔴 यहाँ WEB APP URL डालना है
+/* ADD SERIAL */
+function addSerial(value) {
+  let val = value || document.getElementById("serial").value.trim();
+  if (!val) return;
+
+  if (serialArray.includes(val)) {
+    alert("Already added");
+    return;
+  }
+
+  serialArray.push(val);
+
+  let li = document.createElement("li");
+  li.textContent = val;
+
+  let btn = document.createElement("button");
+  btn.textContent = "❌";
+  btn.onclick = () => {
+    serialArray = serialArray.filter(s => s !== val);
+    li.remove();
+  };
+
+  li.appendChild(btn);
+  document.getElementById("list").appendChild(li);
+
+  document.getElementById("serial").value = "";
+}
+
+/* START SCANNER */
+function startScanner() {
+  if (scanning) return;
+
+  scanner = new Html5Qrcode("reader");
+  scanning = true;
+
+  scanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    (decodedText) => addSerial(decodedText),
+    (error) => {}
+  );
+}
+
+/* STOP SCANNER */
+function stopScanner() {
+  if (scanner && scanning) {
+    scanner.stop().then(() => {
+      scanning = false;
+      document.getElementById("reader").innerHTML = "";
+    });
+  }
+}
+
+/* WEB APP URL */
 const scriptURL = "https://script.google.com/macros/s/AKfycbzLqH_rA8dNoDizHwf9W_B8T9ST3mejZ3X5f4hDNDtTXd54982iqC_AxMMNy5_hrFU/exec";
 
-function sendData() {
+/* SUBMIT */
+document.getElementById("form").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  if (serialArray.length === 0) {
+    alert("Scan at least one serial");
+    return;
+  }
 
   const data = {
     name: document.getElementById("name").value,
-    sn: document.getElementById("sn").value
+    item: document.getElementById("item").value,
+    category: document.getElementById("category").value,
+    gatepass: document.getElementById("gatepass").value,
+    serials: serialArray,
+    status: document.getElementById("status").value,
+    remark: document.getElementById("remark").value
   };
 
   fetch(scriptURL, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   })
   .then(res => res.text())
-  .then(response => {
-    alert("Gate Pass Saved!");
-    console.log(response);
+  .then(res => {
+    alert("Saved Successfully ✔");
+
+    serialArray = [];
+    document.getElementById("list").innerHTML = "";
+    document.getElementById("form").reset();
   })
   .catch(err => {
-    alert("Error!");
+    alert("Error: " + err);
     console.log(err);
   });
-
-}
-
+});
 </script>
 
 </body>
